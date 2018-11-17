@@ -9,6 +9,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 using namespace std;
 
@@ -17,20 +18,23 @@ public:
     InputData() = default;
     InputData(int nods, int links, int exits);
     
-    void AddLink(const vector<int> link);
+    void AddLink(const int n1, const int n2);
+    string CheckAndRemoveLink(const int virusPosition);
     void AddExit(const int exit);
     
     int NumberOfNods() const;
     int NumberOfLinks() const;
     int NumberOfExits() const;
-    vector<vector<int>> GetLinkAtIndex() const;
+    vector< vector<int> > GetLinks() const;
     vector<int> GetExits() const;
     
 private:
     int numberOfNods = 0;
     int numberOfLinks = 0;
     int numberOfExits = 0;
-    vector<vector<int>> links;
+    vector< vector<int> > links;
     vector<int> exits;
+    
+    int GetLinkIndexToRemove(int virusPos);
     
 };

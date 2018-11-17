@@ -61,8 +61,8 @@
 			isa = PBXGroup;
 			children = (
 				EF3EC28B21936E4100D40D6B /* main.cpp */,
-				EF3EC292219378CB00D40D6B /* InputData.cpp */,
 				EF3EC293219378CB00D40D6B /* InputData.hpp */,
+				EF3EC292219378CB00D40D6B /* InputData.cpp */,
 			);
 			path = CodinGame_SkynetRevolution_Ep1;
 			sourceTree = "<group>";
