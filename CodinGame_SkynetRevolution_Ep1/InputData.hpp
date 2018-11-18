@@ -8,8 +8,9 @@
 
 #pragma once
 
-#include <vector>
 #include <string>
+#include <algorithm>
+#include <vector>
 
 using namespace std;
 
@@ -42,5 +43,6 @@ private:
     //Scynet Revolution Episode2 solution:
     //https://www.codingame.com/ide/puzzle/skynet-revolution-episode-2
     int GetLinkIndexToRemoveByShortestWay(const int & virusPos);
-
+    int GetIndexByLink(const vector<int> & linkToRemove, const vector<vector<int>> & vectorToCheck);
+    void RemoveElementsByIndex(vector<vector<int>> & removeFrom, vector<int> & indexes);
 };

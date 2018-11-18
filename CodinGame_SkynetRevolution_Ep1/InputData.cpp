@@ -82,76 +82,88 @@ int InputData::GetLinkIndexToRemove(const int & virusCoord) {
 
 int InputData::GetLinkIndexToRemoveByShortestWay(const int & virusCoord) {
     vector<vector<int>> allUncheckedLinks(InputData::links);
-    vector<vector<int>> allPossibleWays;
+    vector<vector<int>> allPossibleVirusWays;
     vector<int> indexesToRemove;
-    vector<int> linkToRemove;
-    int index = -1;
-    
     
     for(vector<int> link : InputData::links){
-        index++;
         for(int & exit : InputData::exits){
             if((link[0] == exit && link[1] == virusCoord) || (link[0] == virusCoord && link[1] == exit)) {
-                return index;
+                return GetIndexByLink(link, links);
             }
-            
-            if((link[0] == exit|| link[1] == exit)) {
-                indexesToRemove.push_back(index);
-                allPossibleWays.push_back(link);
-            }
+        }
+        
+        if(link[0] == virusCoord) {
+            indexesToRemove.push_back(GetIndexByLink(link, links));
+            allPossibleVirusWays.push_back(link);
+        } else if(link[1] == virusCoord) {
+            indexesToRemove.push_back(GetIndexByLink(link, links));
+            swap(link[0], link[1]);
+            allPossibleVirusWays.push_back(link);
         }
     }
     
-    for (int i = (int)(indexesToRemove.size() - 1); i >= 0; i--){
-        vector<vector<int>>::iterator it = allUncheckedLinks.begin();
-        advance(it, indexesToRemove[i]);
-        allUncheckedLinks.erase(it);
-    }
+    RemoveElementsByIndex(allUncheckedLinks, indexesToRemove);
     
-    while(linkToRemove.empty() || !allUncheckedLinks.empty()){
-        for(vector<int> & link : allPossibleWays){
-            for(int curPoint : link){
-                if(curPoint == virusCoord){
-                    linkToRemove = link;
-                    break;
-                }
-            }
-            
-            //indexesToRemove.clear();
-            //index = -1;
-            
-            for(vector<int> linkToCheck : allUncheckedLinks){
-                //index++;
-                for(int curPoint : link){
-                    if(linkToCheck[0] == curPoint || linkToCheck[1] == curPoint){
-                        link.push_back(linkToCheck[0]);
-                        link.push_back(linkToCheck[1]);
-                        //indexesToRemove.push_back(index);
-                        break;
+    while(!allUncheckedLinks.empty()){
+        indexesToRemove.clear();
+        vector<vector<int>> newWays;
+        
+        for(vector<int> & virusLink : allPossibleVirusWays){
+            for(int curVirusPoint : virusLink){
+                for(int exit : exits){
+                    if(curVirusPoint == exit){
+                        return GetIndexByLink(virusLink, links);
                     }
                 }
-//                if(!indexesToRemove.empty())
-//                    break;
             }
             
-//            for (int i = (int)(indexesToRemove.size() - 1); i >= 0; i--){
-//                vector<vector<int>>::iterator it = allUncheckedLinks.begin();
-//                advance(it, indexesToRemove[i]);
-//                allUncheckedLinks.erase(it);
-//            }
+            int virusLastPosition = virusLink.back();
+            
+            for(vector<int> linkToCheck : allUncheckedLinks){
+                if(linkToCheck[0] == virusLastPosition){
+                    newWays.push_back(linkToCheck);
+                    int curIndex = GetIndexByLink(linkToCheck, allUncheckedLinks);
+                    if (find(indexesToRemove.begin(), indexesToRemove.end(), curIndex) == indexesToRemove.end())
+                        indexesToRemove.push_back(curIndex);
+                    
+                } else if(linkToCheck[1] == virusLastPosition){
+                    swap(linkToCheck[0], linkToCheck[1]);
+                    newWays.push_back(linkToCheck);
+                    int curIndex = GetIndexByLink(linkToCheck, allUncheckedLinks);
+                    if (find(indexesToRemove.begin(), indexesToRemove.end(), curIndex) == indexesToRemove.end())
+                        indexesToRemove.push_back(curIndex);
+                    
+                }
+            }
         }
+        allPossibleVirusWays.clear();
+        allPossibleVirusWays = newWays;
+        RemoveElementsByIndex(allUncheckedLinks, indexesToRemove);
+        
     }
     
-    index = -1;
-    for(vector<int> link : links){
+    return -1;
+}
+
+int InputData::GetIndexByLink(const vector<int> & linkToCheck, const vector<vector<int>> & vectorToCheck){
+    int index = -1;
+    
+    for(const vector<int> & link : vectorToCheck){
         index++;
-        if((link[0] == linkToRemove[0] && link[1] == linkToRemove[1])
-           || (link[0] == linkToRemove[1] && link[1] == linkToRemove[0]))
+        if((link[0] == linkToCheck[0] && link[1] == linkToCheck[1])
+           || (link[0] == linkToCheck[1] && link[1] == linkToCheck[0]))
             return index;
     }
-
-    //if returned index -1 -> doesnt work proper
+    
     return index;
 }
 
+void InputData::RemoveElementsByIndex(vector<vector<int> > &removeFrom, vector<int> &indexes) {
+    sort(indexes.begin(), indexes.end());
+    for (int i = (int)(indexes.size() - 1); i >= 0; i--){
+        vector<vector<int>>::iterator it = removeFrom.begin();
+        advance(it, indexes[i]);
+        removeFrom.erase(it);
+    }
+}
 
