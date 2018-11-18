@@ -19,7 +19,7 @@ public:
     InputData(int nods, int links, int exits);
     
     void AddLink(const int n1, const int n2);
-    string CheckAndRemoveLink(const int virusPosition);
+    string CheckAndRemoveLink(const int & virusPosition, const bool usingAStar = false);
     void AddExit(const int exit);
     
     int NumberOfNods() const;
@@ -35,6 +35,12 @@ private:
     vector< vector<int> > links;
     vector<int> exits;
     
-    int GetLinkIndexToRemove(int virusPos);
+    //Scynet Revolution Episode1 solution:
+    //https://www.codingame.com/ide/puzzle/skynet-revolution-episode-1
+    int GetLinkIndexToRemove(const int & virusPos);
     
+    //Scynet Revolution Episode2 solution:
+    //https://www.codingame.com/ide/puzzle/skynet-revolution-episode-2
+    int GetLinkIndexToRemoveByShortestWay(const int & virusPos);
+
 };
